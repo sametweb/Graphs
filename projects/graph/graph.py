@@ -69,7 +69,9 @@ class Graph:
                     s.push(next_vertex)
 
 
-    def dft_recursive(self, starting_vertex, visited = set()):
+    def dft_recursive(self, starting_vertex, visited = None):
+        if visited == None:
+            visited = set()
         print(starting_vertex)
         visited.add(starting_vertex)
         if len(self.get_neighbors(starting_vertex)) > 0:
@@ -167,8 +169,23 @@ class Graph:
         # return None
         return None
 
-    def dfs_recursive(self, starting_vertex, destination_vertex, visited = set()):
-        pass
+    def dfs_recursive(self, starting_vertex, destination_vertex, visited = None, path = None):
+        if visited is None:
+            visited = set()
+
+        if path is None:
+            path = []
+
+        if starting_vertex not in visited:            
+            visited.add(starting_vertex)
+            path_copy = path + [starting_vertex]
+            if starting_vertex == destination_vertex:
+                return path_copy
+            for neighbor in self.get_neighbors(starting_vertex):
+                new_path = self.dfs_recursive(neighbor, destination_vertex, visited, path_copy)
+                if new_path is not None:
+                    return new_path
+        return None
 
 if __name__ == '__main__':
     graph = Graph()  # Instantiate your graph
