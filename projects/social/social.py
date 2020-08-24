@@ -1,3 +1,5 @@
+import random
+from util import Queue, Stack
 class User:
     def __init__(self, name):
         self.name = name
@@ -45,8 +47,28 @@ class SocialGraph:
         # !!!! IMPLEMENT ME
 
         # Add users
+        for i in range(0, num_users):
+            self.add_user(f"user {i}")
 
         # Create friendships
+        # generate all possible friendship combinations
+        possible_friendships = []
+
+        # avoid dups by ensuring first num < second num
+        for user_id in self.users:
+            for friend_id in range(user_id + 1, self.last_id + 1):
+                possible_friendships.append((user_id, friend_id))
+
+        # shuffle friendships
+        random.shuffle(possible_friendships)
+
+        # create friendships for the first N pairs of the list
+        # N -> num_users * avg_friendships // 2
+        N = num_users * avg_friendships // 2
+        for i in range(N):
+            friendship = possible_friendships[i]
+            user_id, friend_id = friendship
+            self.add_friendship(user_id, friend_id)
 
     def get_all_social_paths(self, user_id):
         """
@@ -59,6 +81,29 @@ class SocialGraph:
         """
         visited = {}  # Note that this is a dictionary, not a set
         # !!!! IMPLEMENT ME
+        # BFT, that's why Queue
+        q = Queue()
+        # Manually add first user to the Queue
+        q.enqueue(user_id)
+        # The path from user_id to user_id is itself, add it as starting path
+        visited[user_id] = [user_id]
+
+        # As long as there is an friend in the queue to discover:
+        while q.size() > 0:    
+            # Dequeue the user from Queue
+            user = q.dequeue()
+            # Get the user's friends
+            friends = self.friendships[user]
+
+            # Check every friend of the user
+            for f in friends:
+                # If that friend is not visited yet
+                if f not in visited:
+                    # Add that friend to the Queue to explore later
+                    q.enqueue(f)
+                    # Save the path for the friend by combining user's path with friend's ID
+                    visited[f] = visited[user] + [f]
+
         return visited
 
 

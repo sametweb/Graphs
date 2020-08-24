@@ -72,13 +72,12 @@ class Graph:
     def dft_recursive(self, starting_vertex, visited = None):
         if visited == None:
             visited = set()
-        print(starting_vertex)
         visited.add(starting_vertex)
+        print(starting_vertex)
         if len(self.get_neighbors(starting_vertex)) > 0:
             for vertex in self.get_neighbors(starting_vertex):
                 if vertex not in visited:
-                    visited.add(vertex)
-                    self.dft_recursive(vertex, visited)
+                     self.dft_recursive(vertex, visited)
 
     def bfs(self, starting_vertex, destination_vertex):
         """
